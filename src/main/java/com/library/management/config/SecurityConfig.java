@@ -1,10 +1,5 @@
 package com.library.management.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.management.api.ApiError;
-import com.library.management.auth.filter.JwtAuthenticationFilter;
-import com.library.management.auth.service.LibraryUserDetailsService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.library.management.api.ApiError;
+import com.library.management.auth.filter.JwtAuthenticationFilter;
+import com.library.management.auth.service.LibraryUserDetailsService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableMethodSecurity
@@ -56,6 +58,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/authors").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
