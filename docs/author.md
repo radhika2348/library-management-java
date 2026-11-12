@@ -1,3 +1,6 @@
+### Task1
+
+- Branh feature/AddAuthor
 # Add an author
 
 A librarian needs one catalog record per writer so books can name that writer consistently.
@@ -43,3 +46,23 @@ curl -s -X POST http://localhost:8080/api/v1/authors \
   -H 'Content-Type: application/json' \
   -d '{"name":"alexa","biography":"This Book tells the story of my life","yearOfBirth":2005,"nationality":"Italian"}'
 ```
+
+
+## TASK 2
+
+- Branch -feature/View-an-Author
+
+## Who this is for
+
+A signed-in person needs to open one author and read the record the library keeps.
+
+## Requirement
+
+Anyone who is signed in can open a single author that is already on file.
+
+### `GET /api/v1/authors/{id}`
+
+
+
+
+
