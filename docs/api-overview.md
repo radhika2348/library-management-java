@@ -62,6 +62,17 @@ Full update of mutable book fields.
 - `404` unknown id
 - `409` ISBN belongs to another book
 
+
+### `POST /api/v1/authors`
+
+Returns a bearer token.
+
+-`201` with author payload
+-`400` validation errors
+-`409` duplicate author name
+
+
+
 ## Not implemented (intern backlog)
 
 - Authors (entire resource)

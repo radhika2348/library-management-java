@@ -10,7 +10,7 @@ public class AuthorMapper {
 
     public AuthorResponse toResponse(AuthorDocument document){
         return new AuthorResponse(
-            document.getID(),
+            document.getId(),
             document.getName(),
             document.getBiography(),
             document.getYearOfBirth(),

@@ -16,6 +16,10 @@ public class V001IndexChangelog {
                 new Index().on("email", Sort.Direction.ASC).unique().named("uk_users_email")
         );
 
+    //     mongoTemplate.indexOps("authors").ensureIndex(
+    //         new Index().on("authorName", Sort.Direction.ASC).unique().named("uk_authors_name")
+    // );
+
         mongoTemplate.indexOps("books").ensureIndex(
                 new Index().on("isbn", Sort.Direction.ASC).unique().named("uk_books_isbn")
         );
@@ -30,5 +34,6 @@ public class V001IndexChangelog {
         mongoTemplate.indexOps("users").dropIndex("uk_users_email");
         mongoTemplate.indexOps("books").dropIndex("uk_books_isbn");
         mongoTemplate.indexOps("books").dropIndex("idx_books_title");
+      //  mongoTemplate.indexOps("authors").dropIndex("uk_authors_name");
     }
 }

@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.library.management.author.dto.AuthorResponse;
-//import com.library.management.author.service.AuthorService;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
@@ -25,8 +24,8 @@ public class AuthorServiceTest {
 
     @Mock
     private AuthorRepository authorRepository;
-    
-    private  AuthorService authorService;
+
+    private AuthorService authorService;
 
     @BeforeEach
     void setUp() {
@@ -39,8 +38,7 @@ public class AuthorServiceTest {
                 "Alexa",
                 "Password1",
                 2005,
-                "Italian"
-        );
+                "Italian");
 
         when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(false);
         when(authorRepository.save(any(AuthorDocument.class))).thenAnswer(invocation -> {
@@ -66,13 +64,11 @@ public class AuthorServiceTest {
     }
 
     @Test
-
     void registerRejectsDuplicateName() {
         when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(true);
 
         assertThatThrownBy(() -> authorService.register(
-                new RegisterAuthorRequest("alexa", "Password1", 2005, "Italian")
-        ))
+                new RegisterAuthorRequest("alexa", "Password1", 2005, "Italian")))
                 .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("Author already registered");
     }

@@ -20,7 +20,7 @@ public class AuthorDocument {
 
     private String nationality;
 
-    public String getID(){
+    public String getId(){
         return id;
     }
 
