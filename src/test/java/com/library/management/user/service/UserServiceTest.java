@@ -44,8 +44,7 @@ class UserServiceTest {
         RegisterUserRequest request = new RegisterUserRequest(
                 "  Alex@Example.com ",
                 "Password1",
-                " Alex Reader "
-        );
+                " Alex Reader ");
 
         when(userRepository.existsByEmailIgnoreCase("alex@example.com")).thenReturn(false);
         when(passwordEncoder.encode("Password1")).thenReturn("hashed");
@@ -78,8 +77,7 @@ class UserServiceTest {
         when(userRepository.existsByEmailIgnoreCase("alex@example.com")).thenReturn(true);
 
         assertThatThrownBy(() -> userService.register(
-                new RegisterUserRequest("alex@example.com", "Password1", "Alex Reader")
-        ))
+                new RegisterUserRequest("alex@example.com", "Password1", "Alex Reader")))
                 .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("already registered");
     }

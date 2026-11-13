@@ -45,12 +45,8 @@ public class AuthorController {
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     @ApiResponse(responseCode = "409", description = "Author already registered", content = @Content)
     public AuthorResponse register(@Valid @RequestBody RegisterAuthorRequest request) {
-        try {
-            return authorService.register(request);
-        } catch (Exception e) {
-            log.error("Failed to register the author", e);
-            return null;
-        }
+
+        return authorService.register(request);
 
     }
 }

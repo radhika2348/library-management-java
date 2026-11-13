@@ -9,5 +9,5 @@ import com.library.management.author.model.AuthorDocument;
 public interface AuthorRepository extends MongoRepository<AuthorDocument, String> {
     Optional<AuthorDocument> findByNameIgnoreCase(String name);
 
-     boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCase(String name);
 }
