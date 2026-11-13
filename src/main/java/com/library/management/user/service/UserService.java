@@ -1,16 +1,17 @@
 package com.library.management.user.service;
 
+import java.util.Locale;
+import java.util.Set;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.library.management.exception.ConflictException;
 import com.library.management.user.dto.RegisterUserRequest;
 import com.library.management.user.dto.UserResponse;
 import com.library.management.user.model.Role;
 import com.library.management.user.model.UserDocument;
 import com.library.management.user.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Locale;
-import java.util.Set;
 
 @Service
 public class UserService {

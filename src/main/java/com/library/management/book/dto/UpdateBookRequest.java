@@ -23,7 +23,7 @@ public record UpdateBookRequest(
         @Size(max = 2000, message = "Description must be at most 2000 characters")
         String description,
 
-        @NotNull(message = "Publication year is required")
+        
         @Min(value = 1450, message = "Publication year must be 1450 or later")
         @Max(value = 2100, message = "Publication year must be 2100 or earlier")
         Integer publicationYear,

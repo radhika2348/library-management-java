@@ -27,9 +27,7 @@ All handled errors return:
   "error": "Validation Failed",
   "message": "Request validation failed",
   "path": "/api/v1/users",
-  "violations": [
-    { "field": "email", "message": "Email must be valid" }
-  ]
+  "violations": [{ "field": "email", "message": "Email must be valid" }]
 }
 ```
 
@@ -61,6 +59,12 @@ Full update of mutable book fields.
 - `403` authenticated but wrong role
 - `404` unknown id
 - `409` ISBN belongs to another book
+
+### `POST /api/v1/authors`
+
+Creates a `AUTHOR` account.
+
+-`201` with author payload -`400` validation errors -`409` duplicate author name
 
 ## Not implemented (intern backlog)
 
