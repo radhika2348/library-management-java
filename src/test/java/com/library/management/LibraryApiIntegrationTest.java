@@ -165,6 +165,24 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
+  void adminRegisterAuthor() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(post("/api/v1/authors")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "name": "not-a-nam",
+              "biography": "short this book is about my childhood story",
+               "yearOfBirth":2005,
+              "nationality":"Italian"
+            }
+            """))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
   void registerAuthorRejectsInvalidPayloadYearIsZero() throws Exception {
     mockMvc.perform(post("/api/v1/authors")
         .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +226,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
             {
               "name": "not-a-name",
               "biography": "short this book is about my childhood story",
-               "yearOfBirth":2028,
+               "yearOfBirth":202,
               "nationality":"Italian"
             }
             """))
