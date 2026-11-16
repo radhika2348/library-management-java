@@ -165,7 +165,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
-  void registerAuthorRejectsInvalidPayloadYearLessThan1() throws Exception {
+  void registerAuthorRejectsInvalidPayloadYearIsZero() throws Exception {
     mockMvc.perform(post("/api/v1/authors")
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
@@ -183,14 +183,14 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
-  void registerAuthorRejectsInvalidPayloadYearGreaterThanCurrentYear() throws Exception {
+  void registerAuthorRejectsInvalidPayloadYearIsNegativeOrLessThan1() throws Exception {
     mockMvc.perform(post("/api/v1/authors")
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
               "name": "not-a-name",
               "biography": "short this book is about my childhood story",
-               "yearOfBirth":2027,
+               "yearOfBirth":-5,
               "nationality":"Italian"
             }
             """))
@@ -201,32 +201,14 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
-  void registerAuthorRejectsInvalidPayloadYearLesserThanOne() throws Exception {
+  void registerAuthorRejectsInvalidPayloadYearIfIsGreaterThanCurrentYear() throws Exception {
     mockMvc.perform(post("/api/v1/authors")
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
               "name": "not-a-name",
               "biography": "short this book is about my childhood story",
-               "yearOfBirth":-4,
-              "nationality":"Italian"
-            }
-            """))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.error").value("Validation Failed"))
-        .andExpect(jsonPath("$.violations").isArray());
-
-  }
-
-  @Test
-  void registerAuthorRejectsInvalidPayloadYearIsEqualToZero() throws Exception {
-    mockMvc.perform(post("/api/v1/authors")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content("""
-            {
-              "name": "not-a-name",
-              "biography": "short this book is about my childhood story",
-               "yearOfBirth":0,
+               "yearOfBirth":2028,
               "nationality":"Italian"
             }
             """))
