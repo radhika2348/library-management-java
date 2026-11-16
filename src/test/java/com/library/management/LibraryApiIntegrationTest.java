@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
-
 import com.library.management.book.model.BookDocument;
 import com.library.management.book.repository.BookRepository;
 import com.library.management.support.MongoTestcontainersConfig;
@@ -99,7 +98,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
 
     AuthorDocument author = new AuthorDocument();
     author.setName("alexa");
-    author.setBiography("This is my favourite book among 10000 books");
+    author.setBiography("This Book is about my childhood memories");
     author.setYearOfBirth(2004);
     author.setNationality("Japanese");
     authorRepository.save(author);
@@ -156,23 +155,79 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
             {
               "email": "not-an-email",
               "password": "short",
-              "fullName": ""
+              "fullName": "                         "
             }
             """))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
+
   }
 
   @Test
-  void registerAuthorRejectsInvalidPayload() throws Exception {
+  void registerAuthorRejectsInvalidPayloadYearLessThan1() throws Exception {
     mockMvc.perform(post("/api/v1/authors")
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
               "name": "not-a-name",
-              "biography": "short",
-              "nationality":""
+              "biography": "short this book is about my childhood story",
+               "yearOfBirth":0,
+              "nationality":"Italian"
+            }
+            """))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("Validation Failed"))
+        .andExpect(jsonPath("$.violations").isArray());
+
+  }
+
+  @Test
+  void registerAuthorRejectsInvalidPayloadYearGreaterThanCurrentYear() throws Exception {
+    mockMvc.perform(post("/api/v1/authors")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "name": "not-a-name",
+              "biography": "short this book is about my childhood story",
+               "yearOfBirth":2027,
+              "nationality":"Italian"
+            }
+            """))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("Validation Failed"))
+        .andExpect(jsonPath("$.violations").isArray());
+
+  }
+
+  @Test
+  void registerAuthorRejectsInvalidPayloadYearLesserThanOne() throws Exception {
+    mockMvc.perform(post("/api/v1/authors")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "name": "not-a-name",
+              "biography": "short this book is about my childhood story",
+               "yearOfBirth":-4,
+              "nationality":"Italian"
+            }
+            """))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("Validation Failed"))
+        .andExpect(jsonPath("$.violations").isArray());
+
+  }
+
+  @Test
+  void registerAuthorRejectsInvalidPayloadYearIsEqualToZero() throws Exception {
+    mockMvc.perform(post("/api/v1/authors")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "name": "not-a-name",
+              "biography": "short this book is about my childhood story",
+               "yearOfBirth":0,
+              "nationality":"Italian"
             }
             """))
         .andExpect(status().isBadRequest())
