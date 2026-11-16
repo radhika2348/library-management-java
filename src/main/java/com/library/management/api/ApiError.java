@@ -1,9 +1,9 @@
 package com.library.management.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.Instant;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record ApiError(
@@ -12,8 +12,7 @@ public record ApiError(
         String error,
         String message,
         String path,
-        List<FieldViolation> violations
-) {
+        List<FieldViolation> violations) {
 
     public record FieldViolation(String field, String message) {
     }

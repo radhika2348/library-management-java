@@ -26,7 +26,7 @@ public class OpenApiConfig {
                                 - POST /api/v1/users — public member registration
                                 - POST /api/v1/auth/login — JWT login
                                 - PUT /api/v1/books/{id} — secured book update (ADMIN, LIBRARIAN)
-
+                                -POST /api/v1/authors -secured author registration(ADMIN,LIBRARIAN)
                                 The Author resource is intentionally left unimplemented for interns.
                                 """)
                         .version("0.1.0")

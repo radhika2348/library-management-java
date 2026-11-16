@@ -3,7 +3,7 @@ spring:
     name: library-management
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/library_management}
+      uri: ${MONGODB_URI:mongodb://localhost:27018/library_management}
   jackson:
     default-property-inclusion: non_null
     serialization:
