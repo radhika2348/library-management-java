@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.library.management.author.dto.AuthorResponse;
-import com.library.management.author.dto.AuthorViewResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
@@ -109,7 +108,7 @@ public class AuthorServiceTest {
         AuthorDocument saved = captor.getValue();
 
         when(authorRepository.findById("author-1")).thenReturn(Optional.of(saved));
-        AuthorViewResponse response1 = authorService.viewAuthorProfile("author-1");
+        AuthorResponse response1 = authorService.viewAuthorProfile("author-1");
 
         assertThat(response1.name()).isEqualTo("alexa");
         assertThat(response1.biography()).isEqualTo("Password1");

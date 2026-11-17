@@ -5,7 +5,6 @@ import java.util.Locale;
 import org.springframework.stereotype.Service;
 
 import com.library.management.author.dto.AuthorResponse;
-import com.library.management.author.dto.AuthorViewResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
@@ -47,12 +46,12 @@ public class AuthorService {
 
     }
 
-    public AuthorViewResponse viewAuthorProfile(String id) {
+    public AuthorResponse viewAuthorProfile(String id) {
 
         AuthorDocument author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found: " + id));
 
-        return authorMapper.toAuthorViewResponse(author);
+        return authorMapper.toResponse(author);
 
     }
 
