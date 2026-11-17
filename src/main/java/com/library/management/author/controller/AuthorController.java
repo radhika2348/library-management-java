@@ -59,8 +59,8 @@ public class AuthorController {
     @ApiResponse(responseCode = "200", description = "Author Found and Displayed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Author was not found", content = @Content)
     @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
-    public AuthorViewResponse update(@PathVariable String id) {
-        
+    public AuthorViewResponse viewAuthor(@PathVariable String id) {
+
         return authorService.viewAuthorProfile(id);
     }
 
