@@ -60,3 +60,20 @@ A signed-in person needs to open one author and read the record the library keep
 Anyone who is signed in can open a single author that is already on file.
 
 ### `GET /api/v1/authors/{id}`
+
+Returns author profile
+
+- `200` author found
+- `403` author was not found
+- `404` unauthorized access
+
+### Example requests
+
+ViewAnAuthor:
+
+View Author(replace `{id}` with an postman generated_authorId):
+
+```bash
+curl -s -X GET http://localhost:8080/api/v1/authors/{id} \
+  -H 'Content-Type: application/json' \
+```

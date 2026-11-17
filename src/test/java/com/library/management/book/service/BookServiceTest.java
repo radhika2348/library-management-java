@@ -50,8 +50,7 @@ class BookServiceTest {
                 "Updated description",
                 2020,
                 5,
-                4
-        );
+                4);
 
         when(bookRepository.findById("book-1")).thenReturn(Optional.of(existing));
         when(bookRepository.existsByIsbnAndIdNot("9780596009205", "book-1")).thenReturn(false);
@@ -101,8 +100,7 @@ class BookServiceTest {
                 "Desc",
                 2020,
                 2,
-                3
-        );
+                3);
 
         when(bookRepository.findById("book-1")).thenReturn(Optional.of(existing));
         when(bookRepository.existsByIsbnAndIdNot("9780596009205", "book-1")).thenReturn(false);
@@ -120,7 +118,6 @@ class BookServiceTest {
                 "Desc",
                 2020,
                 5,
-                4
-        );
+                4);
     }
 }

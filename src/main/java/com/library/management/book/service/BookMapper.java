@@ -18,7 +18,6 @@ public class BookMapper {
                 document.getTotalCopies(),
                 document.getAvailableCopies(),
                 document.getCreatedAt(),
-                document.getUpdatedAt()
-        );
+                document.getUpdatedAt());
     }
 }

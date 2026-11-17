@@ -10,4 +10,5 @@ public interface AuthorRepository extends MongoRepository<AuthorDocument, String
     Optional<AuthorDocument> findByNameIgnoreCase(String name);
 
     boolean existsByNameIgnoreCase(String name);
+
 }

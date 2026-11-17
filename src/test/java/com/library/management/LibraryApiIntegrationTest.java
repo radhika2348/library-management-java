@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -58,6 +60,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   private PasswordEncoder passwordEncoder;
 
   private String bookId;
+  private String authorId;
 
   @BeforeEach
   void setUp() {
@@ -73,6 +76,16 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
     admin.setCreatedAt(Instant.now());
     admin.setUpdatedAt(Instant.now());
     userRepository.save(admin);
+
+    UserDocument librarian = new UserDocument();
+    librarian.setEmail("librarian@library.local");
+    librarian.setPasswordHash(passwordEncoder.encode("ChangeMe1234!"));
+    librarian.setFullName("Librarian");
+    librarian.setRoles(Set.of(Role.LIBRARIAN));
+    librarian.setEnabled(true);
+    librarian.setCreatedAt(Instant.now());
+    librarian.setUpdatedAt(Instant.now());
+    userRepository.save(librarian);
 
     UserDocument member = new UserDocument();
     member.setEmail("member@library.local");
@@ -102,6 +115,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
     author.setYearOfBirth(2004);
     author.setNationality("Japanese");
     authorRepository.save(author);
+    authorId = authorRepository.save(author).getId();
 
   }
 
@@ -235,6 +249,43 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .contentType(MediaType.APPLICATION_JSON)
         .content(validUpdatePayload()))
         .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void viewAuthorRequiresAuthentication() throws Exception {
+    mockMvc.perform(get("/api/v1/authors/{id}", authorId)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void viewAuthorAllowMemberRole() throws Exception {
+    String memberToken = login("member@library.local", "MemberPass1");
+
+    mockMvc.perform(get("/api/v1/authors/{id}", authorId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void viewAuthorAllowAdminRole() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(get("/api/v1/authors/{id}", authorId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void viewAuthorAllowLibrarianRole() throws Exception {
+    String adminToken = login("librarian@library.local", "ChangeMe1234!");
+
+    mockMvc.perform(get("/api/v1/authors/{id}", authorId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 
   @Test

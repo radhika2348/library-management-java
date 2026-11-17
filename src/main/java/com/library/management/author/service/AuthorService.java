@@ -5,10 +5,12 @@ import java.util.Locale;
 import org.springframework.stereotype.Service;
 
 import com.library.management.author.dto.AuthorResponse;
+import com.library.management.author.dto.AuthorViewResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
 import com.library.management.exception.ConflictException;
+import com.library.management.exception.ResourceNotFoundException;
 
 @Service
 public class AuthorService {
@@ -42,6 +44,15 @@ public class AuthorService {
 
         AuthorDocument saved = authorRepository.save(author);
         return authorMapper.toResponse(saved);
+
+    }
+
+    public AuthorViewResponse viewAuthorProfile(String id) {
+
+        AuthorDocument author = authorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found: " + id));
+
+        return authorMapper.toAuthorViewResponse(author);
 
     }
 
