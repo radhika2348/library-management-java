@@ -27,19 +27,15 @@ import jakarta.validation.Valid;
 public class BookController {
 
     private final BookService bookService;
-    
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    @Operation(
-            summary = "Update a book",
-            description = "Fully replaces mutable book fields. Requires ADMIN or LIBRARIAN role."
-    )
-    @ApiResponse(responseCode = "200", description = "Book updated",
-            content = @Content(schema = @Schema(implementation = BookResponse.class)))
+    @Operation(summary = "Update a book", description = "Fully replaces mutable book fields. Requires ADMIN or LIBRARIAN role.")
+    @ApiResponse(responseCode = "200", description = "Book updated", content = @Content(schema = @Schema(implementation = BookResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     @ApiResponse(responseCode = "401", description = "Missing or invalid token", content = @Content)
     @ApiResponse(responseCode = "403", description = "Insufficient role", content = @Content)

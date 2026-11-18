@@ -3,6 +3,8 @@ package com.library.management.author.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1/authors")
+@RequestMapping("/api/v1")
 @Tag(name = "Authors", description = "Authors registration and account APIs")
 @Slf4j
 @SecurityRequirement(name = "bearerAuth")
@@ -36,7 +38,7 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/authors", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,4 +51,16 @@ public class AuthorController {
         return authorService.register(request);
 
     }
+
+    @GetMapping(value = "/authors/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN','MEMBER')")
+    @Operation(summary = "Display Author profile", description = "Public endpoint that display AUTHOR account. AuthorName ID is used to fetch details.")
+    @ApiResponse(responseCode = "200", description = "Author Found and Displayed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Author was not found", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
+    public AuthorResponse viewAuthor(@PathVariable String id) {
+
+        return authorService.viewAuthorProfile(id);
+    }
+
 }
