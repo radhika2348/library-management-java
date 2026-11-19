@@ -61,6 +61,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
 
   private String bookId;
   private String authorId;
+  private String authorName;
 
   @BeforeEach
   void setUp() {
@@ -284,6 +285,20 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
 
     mockMvc.perform(get("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void searchAuthorsAllowLibrarianRole() throws Exception {
+    String adminToken = login("librarian@library.local", "ChangeMe1234!");
+
+    mockMvc.perform(get("/api/v1/authors/search")
+        .param("name", "alexa")
+        .param("page","0")
+        .param("size","2")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }

@@ -1,14 +1,19 @@
 package com.library.management.author.repository;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.library.management.author.model.AuthorDocument;
 
+
+
 public interface AuthorRepository extends MongoRepository<AuthorDocument, String> {
-    Optional<AuthorDocument> findByNameIgnoreCase(String name);
+    List<AuthorDocument> findByNameContainingIgnoreCase(String name);
 
     boolean existsByNameIgnoreCase(String name);
-
+    
+    
 }
+
+

@@ -1,5 +1,6 @@
 package com.library.management.author.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,6 +124,39 @@ public class AuthorServiceTest {
 
         assertThatThrownBy(() -> authorService.viewAuthorProfile("101"))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void searchWithAuthorName() {
+        RegisterAuthorRequest request = new RegisterAuthorRequest(
+                "Alexa",
+                "Password1",
+                2005,
+                "Italian");
+
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(false);
+        when(authorRepository.save(any(AuthorDocument.class))).thenAnswer(invocation -> {
+            AuthorDocument document = invocation.getArgument(0);
+            document.setID("author-1");
+            return document;
+
+        });
+
+        AuthorResponse response = authorService.register(request);
+
+        ArgumentCaptor<AuthorDocument> captor = ArgumentCaptor.forClass(AuthorDocument.class);
+        verify(authorRepository).save(captor.capture());
+        AuthorDocument saved = captor.getValue();
+
+        when(authorRepository.findByNameContainingIgnoreCase("alexa")).thenReturn(List.of(saved));
+
+        List<AuthorResponse> au = authorService.searchAuthor("alexa", 0, 2);
+
+        assertThat(au.get(0).name()).isEqualTo("alexa");
+        assertThat(au.get(0).biography()).isEqualTo("Password1");
+        assertThat(au.get(0).yearOfBirth()).isEqualTo(2005);
+        assertThat(au.get(0).nationality()).isEqualTo("Italian");
+
     }
 
 }

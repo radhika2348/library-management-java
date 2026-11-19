@@ -1,5 +1,7 @@
 package com.library.management.author.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.stereotype.Service;
@@ -55,4 +57,29 @@ public class AuthorService {
 
     }
 
+    public List<AuthorResponse> searchAuthor(String name,int page,int size) {
+        List<AuthorResponse> authors=new ArrayList<>();
+
+        if(name==null||name.isBlank()){
+
+            List<AuthorDocument> author = authorRepository.findAll();
+
+           
+            for (AuthorDocument i : author)
+                authors.add(authorMapper.toResponse(i));
+
+        }
+
+        if (authorRepository.existsByNameIgnoreCase(name)) {
+
+            List<AuthorDocument> author = authorRepository.findByNameContainingIgnoreCase(name);
+
+            
+            for (AuthorDocument i : author)
+                authors.add(authorMapper.toResponse(i));
+
+        } 
+  
+    return authors;
+   }
 }
