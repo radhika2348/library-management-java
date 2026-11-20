@@ -72,14 +72,14 @@ public class AuthorController {
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN','MEMBER')")
-    @Operation(summary = "Display Author profile", description = "Public endpoint that display AUTHOR account. AuthorName ID is used to fetch details.")
+    @Operation(summary = "Display Search Result", description = "Public endpoint that display AUTHOR account. AuthorName  is used to Search.")
     @ApiResponse(responseCode = "200", description = "Author Found and Displayed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
     @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
-
-    public Page<AuthorResponse> searchAuthorByName(@RequestParam("name") String name,
+    public Page<AuthorResponse> searchAuthorsByName(@RequestParam("name") String name,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
+
         return authorService.searchAuthorsByName(name, pageable);
     }
 
