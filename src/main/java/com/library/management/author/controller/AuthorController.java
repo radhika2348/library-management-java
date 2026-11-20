@@ -2,6 +2,8 @@ package com.library.management.author.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,18 +70,17 @@ public class AuthorController {
         return authorService.viewAuthorProfile(id);
     }
 
-    @GetMapping(value = "/authors/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN','MEMBER')")
     @Operation(summary = "Display Author profile", description = "Public endpoint that display AUTHOR account. AuthorName ID is used to fetch details.")
     @ApiResponse(responseCode = "200", description = "Author Found and Displayed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "Author was not found", content = @Content)
     @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
-    public List<AuthorResponse> searchAuthor(@Param(value = "name") String name, @RequestParam("page") int page,
-            @RequestParam("page") int size) {
 
-        List<AuthorResponse> a = authorService.searchAuthor(name,page,size);
-
-        return a;
+    public Page<AuthorResponse> searchAuthorByName(@RequestParam("name") String name,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return authorService.searchAuthorsByName(name, pageable);
     }
 
 }

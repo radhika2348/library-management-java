@@ -5,11 +5,18 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -281,26 +288,60 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
 
   @Test
   void viewAuthorAllowLibrarianRole() throws Exception {
-    String adminToken = login("librarian@library.local", "ChangeMe1234!");
+    String librarianToken = login("librarian@library.local", "ChangeMe1234!");
 
     mockMvc.perform(get("/api/v1/authors/{id}", authorId)
-        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
 
   @Test
   void searchAuthorsAllowLibrarianRole() throws Exception {
-    String adminToken = login("librarian@library.local", "ChangeMe1234!");
+    String memberToken = login("librarian@library.local", "ChangeMe1234!");
 
-    mockMvc.perform(get("/api/v1/authors/search")
+    mockMvc.perform(get("/api/v1/authors")
         .param("name", "alexa")
-        .param("page","0")
-        .param("size","2")
+        .param("page", "0")
+        .param("size", "1")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken)
+
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void searchAuthorsAllowAdminRole() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(get("/api/v1/authors")
+        .param("name", "alexa")
+        .param("page", "0")
+        .param("size", "1")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
 
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  void searchAuthorsAllowMemberRole() throws Exception {
+    String adminToken = login("member@library.local", "MemberPass1");
+
+    mockMvc.perform(get("/api/v1/authors")
+        .param("name", "alexa")
+        .param("page", "0")
+        .param("size", "1")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldReturn401WithoutAuthenticationWhenSearchForAuthorsNamewithoutToken() throws Exception {
+    mockMvc.perform(get("/api/v1/authors"))
+        .andExpect(status().isUnauthorized());
   }
 
   @Test

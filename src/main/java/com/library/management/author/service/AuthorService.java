@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
@@ -57,29 +62,10 @@ public class AuthorService {
 
     }
 
-    public List<AuthorResponse> searchAuthor(String name,int page,int size) {
-        List<AuthorResponse> authors=new ArrayList<>();
+    public Page<AuthorResponse> searchAuthorsByName(String name, Pageable page) {
 
-        if(name==null||name.isBlank()){
+        return authorRepository.findByNameContainingIgnoreCaseOrderByName(name, page).map(authorMapper::toResponse);
 
-            List<AuthorDocument> author = authorRepository.findAll();
+    }
 
-           
-            for (AuthorDocument i : author)
-                authors.add(authorMapper.toResponse(i));
-
-        }
-
-        if (authorRepository.existsByNameIgnoreCase(name)) {
-
-            List<AuthorDocument> author = authorRepository.findByNameContainingIgnoreCase(name);
-
-            
-            for (AuthorDocument i : author)
-                authors.add(authorMapper.toResponse(i));
-
-        } 
-  
-    return authors;
-   }
 }

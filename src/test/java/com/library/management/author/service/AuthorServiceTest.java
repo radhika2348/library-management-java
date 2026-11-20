@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,10 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
@@ -70,7 +76,6 @@ public class AuthorServiceTest {
         assertThat(saved.getBiography()).isEqualTo("Password1");
         assertThat(saved.getYearOfBirth()).isEqualTo(2005);
         assertThat(saved.getNationality()).isEqualTo("Italian");
-
         assertThat(response.name()).isEqualTo("alexa");
 
     }
@@ -127,7 +132,7 @@ public class AuthorServiceTest {
     }
 
     @Test
-    void searchWithAuthorName() {
+    void searchAuthorNameIfMatchesReturnsAuthorDetails() {
         RegisterAuthorRequest request = new RegisterAuthorRequest(
                 "Alexa",
                 "Password1",
@@ -147,15 +152,27 @@ public class AuthorServiceTest {
         ArgumentCaptor<AuthorDocument> captor = ArgumentCaptor.forClass(AuthorDocument.class);
         verify(authorRepository).save(captor.capture());
         AuthorDocument saved = captor.getValue();
+        Pageable page = PageRequest.of(0, 1);
+        when(authorRepository.findByNameContainingIgnoreCaseOrderByName("z", page))
+                .thenReturn(new PageImpl<>(List.of(saved)));
 
-        when(authorRepository.findByNameContainingIgnoreCase("alexa")).thenReturn(List.of(saved));
+        Page<AuthorResponse> a = authorService.searchAuthorsByName("z", page);
 
-        List<AuthorResponse> au = authorService.searchAuthor("alexa", 0, 2);
+        assertThat(a.getNumberOfElements()).isEqualTo(1);
+        assertThat(a.getSize()).isEqualTo(1);
+        assertThat(a.getTotalPages()).isEqualTo(1);
 
-        assertThat(au.get(0).name()).isEqualTo("alexa");
-        assertThat(au.get(0).biography()).isEqualTo("Password1");
-        assertThat(au.get(0).yearOfBirth()).isEqualTo(2005);
-        assertThat(au.get(0).nationality()).isEqualTo("Italian");
+    }
+
+    @Test
+    void searchWithAuthorNameIfNotMatchesReturnEmptyPage() {
+        Pageable page = PageRequest.of(0, 1);
+        when(authorRepository.findByNameContainingIgnoreCaseOrderByName("z", page)).thenReturn(Page.empty());
+
+        Page<AuthorResponse> a = authorService.searchAuthorsByName("z", page);
+
+        assertThat(a.getNumberOfElements()).isEqualTo(0);
+        assertThat(a.getSize()).isEqualTo(0);
 
     }
 
