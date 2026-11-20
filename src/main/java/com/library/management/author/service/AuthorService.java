@@ -1,8 +1,15 @@
 package com.library.management.author.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
@@ -52,6 +59,12 @@ public class AuthorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found: " + id));
 
         return authorMapper.toResponse(author);
+
+    }
+
+    public Page<AuthorResponse> searchAuthorsByName(String name, Pageable page) {
+
+        return authorRepository.findByNameContainingIgnoreCaseOrderByName(name, page).map(authorMapper::toResponse);
 
     }
 

@@ -1,13 +1,13 @@
 package com.library.management.author.repository;
 
-import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.library.management.author.model.AuthorDocument;
 
 public interface AuthorRepository extends MongoRepository<AuthorDocument, String> {
-    Optional<AuthorDocument> findByNameIgnoreCase(String name);
+    Page<AuthorDocument> findByNameContainingIgnoreCaseOrderByName(String name, Pageable pagable);
 
     boolean existsByNameIgnoreCase(String name);
 
