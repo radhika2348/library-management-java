@@ -106,12 +106,32 @@ curl -s -X GET http://localhost:8080/api/v1/authors?name='authorName'&page='valu
   -H 'Content-Type: application/json' \
 ```
 
-## Task 4
+# Remove an author
 
-## Update-An-Autnor
 
-A librarian needs to correct an author's name or details after the record was first saved.
+## Who this is for
+
+A librarian needs to take an author out of the catalog when that writer should no longer be offered for new books.
 
 ## Requirement
 
-A librarian or an administrator can replace the saved details of one author. The updated author can still be found later.
+A librarian or an administrator can remove an author who has no books left in the catalog. After removal, that author cannot be found.
+
+
+### `DELETE /api/v1/authors/{id}`
+
+Returns author profile
+
+- `200` author found and Deleted Successfully
+- `404` unauthorized access
+
+### Example requests
+
+RemoveAnAuthor:
+
+Remove Author(replace `{id}` with an postman generated_authorId):
+
+```bash
+curl -s -X DELETE http://localhost:8080/api/v1/authors/{id} \
+  -H 'Content-Type: application/json' \
+```
