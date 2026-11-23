@@ -1,7 +1,10 @@
 package com.library.management.auth.controller;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.library.management.auth.dto.LoginRequest;
 import com.library.management.auth.dto.LoginResponse;
 import com.library.management.auth.service.AuthService;
+import com.library.management.book.dto.BookResponse;
+import com.library.management.book.dto.UpdateBookRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,4 +41,7 @@ public class AuthController {
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
+
+
+    
 }

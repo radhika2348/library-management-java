@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.repository.AuthorRepository;
+import com.library.management.book.repository.BookRepository;
+
 import com.library.management.author.service.AuthorMapper;
 import com.library.management.author.service.AuthorService;
 
@@ -25,6 +27,8 @@ public class RegisterAuthorRequestTest {
 
     @Mock
     private AuthorRepository authorRepository;
+    private BookRepository bookRepository;
+
 
     private AuthorService authorService;
 
@@ -34,7 +38,7 @@ public class RegisterAuthorRequestTest {
 
     @BeforeEach
     void setUp() {
-        authorService = new AuthorService(authorRepository, new AuthorMapper());
+        authorService = new AuthorService(authorRepository, new AuthorMapper(),bookRepository);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }

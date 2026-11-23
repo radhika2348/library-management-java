@@ -24,6 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -342,6 +344,32 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   void shouldReturn401WithoutAuthenticationWhenSearchForAuthorsNamewithoutToken() throws Exception {
     mockMvc.perform(get("/api/v1/authors"))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void shouldReturn401WithoutAuthenticationWhenDeleteAuthor() throws Exception {
+    mockMvc.perform(delete("/api/v1/authors/{id}",authorId))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void deleteAuthorAllowAdminRole() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(delete("/api/v1/authors/{id}", authorId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void deleteAuthorAllowLibrarianRole() throws Exception {
+    String librarianToken = login("librarian@library.local", "ChangeMe1234!");
+
+    mockMvc.perform(delete("/api/v1/authors/{id}", authorId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 
   @Test

@@ -77,3 +77,41 @@ View Author(replace `{id}` with an postman generated_authorId):
 curl -s -X GET http://localhost:8080/api/v1/authors/{id} \
   -H 'Content-Type: application/json' \
 ```
+
+## Task 3-Search Authors
+
+# Who this is for
+
+A signed-in person needs to find authors without already knowing which record to open.
+
+## Requirement
+
+Anyone who is signed in can page through authors and narrow the list by name.
+
+### `GET /api/v1/authors`
+
+Returns author profile
+
+- `200` author found
+- `404` unauthorized access
+
+### Example requests
+
+SearchUthors:
+
+Use authorName to search:
+
+```bash
+curl -s -X GET http://localhost:8080/api/v1/authors?name='authorName'&page='value'&size='value' \
+  -H 'Content-Type: application/json' \
+```
+
+## Task 4
+
+## Update-An-Autnor
+
+A librarian needs to correct an author's name or details after the record was first saved.
+
+## Requirement
+
+A librarian or an administrator can replace the saved details of one author. The updated author can still be found later.

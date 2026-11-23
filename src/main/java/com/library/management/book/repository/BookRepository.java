@@ -10,4 +10,6 @@ public interface BookRepository extends MongoRepository<BookDocument, String> {
     Optional<BookDocument> findByIsbn(String isbn);
 
     boolean existsByIsbnAndIdNot(String isbn, String id);
+
+    boolean existsByAuthorNameIgnoreCase(String authorName);
 }

@@ -16,7 +16,7 @@ The same information as adding an author: name (required), biography, year of bi
 
 ## Who may do this
 
-- Librarian and administrator: yes
+- Librarian and administrator: yes 
 - Member: no
 - Anyone who is not signed in: no
 
