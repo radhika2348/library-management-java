@@ -30,11 +30,11 @@ public class AuthController {
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Login", description = "Authenticate with email and password to receive a JWT access token.")
-    @ApiResponse(responseCode = "200", description = "Authenticated", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Authenticated",
+            content = @Content(schema = @Schema(implementation = LoginResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
-
 }
