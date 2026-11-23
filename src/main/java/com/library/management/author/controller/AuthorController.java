@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.service.AuthorService;
-import com.library.management.book.dto.BookResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -84,9 +83,9 @@ public class AuthorController {
 
     @DeleteMapping("/authors/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    @ApiResponse(responseCode = "200", description = "Author Details removed", content = @Content(schema = @Schema(implementation = BookResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Author Details removed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
     @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
-    public String deleteStudent(@PathVariable String id) {
+    public String deleteAuthor(@PathVariable String id) {
         return authorService.remove(id);
     }
 
