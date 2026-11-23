@@ -1,10 +1,7 @@
 package com.library.management.author.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +19,6 @@ import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.service.AuthorService;
 import com.library.management.book.dto.BookResponse;
-import com.library.management.book.dto.UpdateBookRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -90,6 +85,7 @@ public class AuthorController {
     @DeleteMapping("/authors/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @ApiResponse(responseCode = "200", description = "Author Details removed", content = @Content(schema = @Schema(implementation = BookResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
     public String deleteStudent(@PathVariable String id) {
         return authorService.remove(id);
     }
