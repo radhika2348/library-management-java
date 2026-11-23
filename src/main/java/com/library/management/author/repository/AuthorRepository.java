@@ -10,5 +10,7 @@ public interface AuthorRepository extends MongoRepository<AuthorDocument, String
     Page<AuthorDocument> findByNameContainingIgnoreCaseOrderByName(String name, Pageable pagable);
 
     boolean existsByNameIgnoreCase(String name);
+    boolean existsByIdIgnoreCase(String id);
+
 
 }

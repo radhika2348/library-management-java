@@ -1,13 +1,11 @@
 package com.library.management.author.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,6 +79,14 @@ public class AuthorController {
         PageRequest pageable = PageRequest.of(page, size);
 
         return authorService.searchAuthorsByName(name, pageable);
+    }
+
+    @DeleteMapping("/authors/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+    @ApiResponse(responseCode = "200", description = "Author Details removed", content = @Content(schema = @Schema(implementation = AuthorResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Unauthorized Access", content = @Content)
+    public String deleteAuthor(@PathVariable String id) {
+        return authorService.remove(id);
     }
 
 }

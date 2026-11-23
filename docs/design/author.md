@@ -77,3 +77,61 @@ View Author(replace `{id}` with an postman generated_authorId):
 curl -s -X GET http://localhost:8080/api/v1/authors/{id} \
   -H 'Content-Type: application/json' \
 ```
+
+## Task 3-Search Authors
+
+# Who this is for
+
+A signed-in person needs to find authors without already knowing which record to open.
+
+## Requirement
+
+Anyone who is signed in can page through authors and narrow the list by name.
+
+### `GET /api/v1/authors`
+
+Returns author profile
+
+- `200` author found
+- `404` unauthorized access
+
+### Example requests
+
+SearchUthors:
+
+Use authorName to search:
+
+```bash
+curl -s -X GET http://localhost:8080/api/v1/authors?name='authorName'&page='value'&size='value' \
+  -H 'Content-Type: application/json' \
+```
+
+# Remove an author
+
+
+## Who this is for
+
+A librarian needs to take an author out of the catalog when that writer should no longer be offered for new books.
+
+## Requirement
+
+A librarian or an administrator can remove an author who has no books left in the catalog. After removal, that author cannot be found.
+
+
+### `DELETE /api/v1/authors/{id}`
+
+Returns author profile
+
+- `200` author found and Deleted Successfully
+- `404` unauthorized access
+
+### Example requests
+
+RemoveAnAuthor:
+
+Remove Author(replace `{id}` with an postman generated_authorId):
+
+```bash
+curl -s -X DELETE http://localhost:8080/api/v1/authors/{id} \
+  -H 'Content-Type: application/json' \
+```

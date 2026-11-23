@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,6 +25,8 @@ import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
+import com.library.management.book.repository.BookRepository;
+
 import com.library.management.exception.ConflictException;
 import com.library.management.exception.ResourceNotFoundException;
 
@@ -39,13 +41,15 @@ public class AuthorServiceTest {
     @Mock
     private AuthorRepository authorRepository;
 
+    private BookRepository bookRepository;
+
     private AuthorService authorService;
 
     private static Validator validator;
 
     @BeforeEach
     void setUp() {
-        authorService = new AuthorService(authorRepository, new AuthorMapper());
+        authorService = new AuthorService(authorRepository, new AuthorMapper(), bookRepository);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -176,4 +180,49 @@ public class AuthorServiceTest {
 
     }
 
+    @Test
+    void checkAuthorDeleted() {
+        RegisterAuthorRequest request = new RegisterAuthorRequest(
+                "Alexa",
+                "Password1",
+                2005,
+                "Italian");
+
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(false);
+        when(authorRepository.save(any(AuthorDocument.class))).thenAnswer(invocation -> {
+            AuthorDocument document = invocation.getArgument(0);
+            document.setID("author-1");
+            return document;
+
+        });
+
+        AuthorResponse response = authorService.register(request);
+
+        ArgumentCaptor<AuthorDocument> captor = ArgumentCaptor.forClass(AuthorDocument.class);
+        verify(authorRepository).save(captor.capture());
+        AuthorDocument saved = captor.getValue();
+
+        assertThat(saved.getName()).isEqualTo("alexa");
+        assertThat(saved.getId()).isEqualTo("author-1");
+
+        assertThat(saved.getBiography()).isEqualTo("Password1");
+        assertThat(saved.getYearOfBirth()).isEqualTo(2005);
+        assertThat(saved.getNationality()).isEqualTo("Italian");
+        assertThat(response.name()).isEqualTo("alexa");
+
+        authorService.remove("author-1");
+
+        assertThat(saved.getName()).isEqualTo(null);
+        assertThat(saved.getBiography()).isEqualTo(null);
+        assertThat(saved.getNationality()).isEqualTo(null);
+
+    }
+
+    @Test
+    void deleteAuthorIfAuthorNotExistReturnsAuthorNotFound() {
+        when(authorRepository.findById("101")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> authorService.remove("101"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
 }
