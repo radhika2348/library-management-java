@@ -52,7 +52,7 @@ public class BookController {
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    @Operation(summary = "Update a book", description = "Fully replaces mutable book fields. Requires ADMIN or LIBRARIAN role.")
+    @Operation(summary = "Tie-Books-To-Authors", description = "Update with AuthorName to Book. Requires ADMIN or LIBRARIAN role.")
     @ApiResponse(responseCode = "200", description = "Book updated with AuthorName in the catalog", content = @Content(schema = @Schema(implementation = BookResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     @ApiResponse(responseCode = "401", description = "Missing or invalid token", content = @Content)
