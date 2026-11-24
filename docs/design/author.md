@@ -162,5 +162,5 @@ TieBooksToAuthors:
 ```bash
 curl -s -X PATCH http://localhost:8080/api/v1/books/{id} \
   -H 'Content-Type: application/json' \
-  -d '{"name":"alexa"}'
+  -d '{"authorName":"alexa"}'
 ```
