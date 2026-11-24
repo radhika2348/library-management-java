@@ -80,6 +80,12 @@ public class BookService {
     public BookResponse register(UpdateBookRequest request) {
 
         String normalizedIsbn = normalizeIsbn(request.isbn());
+        String normalizedName=normalizeName(request.authorName());
+
+        if (authorRepository.existsByNameIgnoreCase(normalizedName) == false) {
+            throw new ResourceNotFoundException("AuthorName not found: " + normalizedName);
+
+        }
 
         if (bookRepository.existsByIsbn(normalizedIsbn)) {
             throw new ConflictException("ISBN is already assigned to another book");

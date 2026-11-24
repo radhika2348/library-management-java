@@ -174,7 +174,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .content("""
             {
               "title": "Seed Book",
-              "authorName": "Author",
+              "authorName": "Alexa",
               "isbn": "9780596009205",
               "description": " integration test",
               "publicationYear": 2021,
@@ -201,7 +201,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .content("""
             {
               "title": "Seed Book",
-              "authorName": "Author",
+              "authorName": "Alexa",
               "isbn": "9780596009205",
               "description": " integration test",
               "publicationYear": 1449,
@@ -225,7 +225,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .content("""
             {
               "title": "Seed Book",
-              "authorName": "Author",
+              "authorName": "Alexa",
               "isbn": "9780596009205",
               "description": " integration test",
               "publicationYear": 2101,
@@ -256,7 +256,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .content("""
             {
               "title": "Seed Book",
-              "authorName": "Author",
+              "authorName": "Alexa",
               "isbn": "9780596009205",
               "description": " integration test",
               "publicationYear": 2019,
@@ -277,7 +277,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .content("""
             {
               "title": "Seed Book",
-              "authorName": "Author",
+              "authorName": "Alexa",
               "isbn": "9780596009205",
               "description": " integration test",
               "publicationYear": 2019,

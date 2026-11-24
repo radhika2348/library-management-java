@@ -206,6 +206,7 @@ class BookServiceTest {
                 2020,
                 5,
                 4);
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(true);
 
         when(bookRepository.existsByIsbn("9780596009205")).thenReturn(false);
         when(bookRepository.save(any(BookDocument.class))).thenAnswer(invocation -> {
