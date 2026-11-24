@@ -5,14 +5,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mock;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +24,6 @@ import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
 import com.library.management.book.repository.BookRepository;
-
 import com.library.management.exception.ConflictException;
 import com.library.management.exception.ResourceNotFoundException;
 
@@ -111,7 +108,7 @@ public class AuthorServiceTest {
 
         });
 
-        AuthorResponse response = authorService.register(request);
+        authorService.register(request);
 
         ArgumentCaptor<AuthorDocument> captor = ArgumentCaptor.forClass(AuthorDocument.class);
         verify(authorRepository).save(captor.capture());
@@ -151,7 +148,7 @@ public class AuthorServiceTest {
 
         });
 
-        AuthorResponse response = authorService.register(request);
+        authorService.register(request);
 
         ArgumentCaptor<AuthorDocument> captor = ArgumentCaptor.forClass(AuthorDocument.class);
         verify(authorRepository).save(captor.capture());
