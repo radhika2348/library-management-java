@@ -68,7 +68,7 @@ public class BookController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Register a new Author", description = "Public endpoint that register Book account. ISBN must be unique.")
+    @Operation(summary = "Register a Book", description = "Public endpoint that register Book account. ISBN must be unique.")
     @ApiResponse(responseCode = "201", description = "Book registered", content = @Content(schema = @Schema(implementation = BookResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     @ApiResponse(responseCode = "409", description = "ISBN conflict", content = @Content)
