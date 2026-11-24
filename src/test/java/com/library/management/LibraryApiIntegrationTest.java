@@ -164,6 +164,132 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
+  void registerBookWithValidDetails() throws Exception {
+
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(post("/api/v1/books")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "title": "Seed Book",
+              "authorName": "Author",
+              "isbn": "9780596009205",
+              "description": " integration test",
+              "publicationYear": 2021,
+              "totalCopies": 6,
+              "availableCopies": 5
+            }
+            """))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.title").value("Seed Book"))
+        .andExpect(jsonPath("$.isbn").value("9780596009205"))
+        .andExpect(jsonPath("$.availableCopies").value(5));
+
+    assertThat(bookRepository.findById(bookId)).isPresent();
+    assertThat(bookRepository.findById(bookId).orElseThrow().getTitle()).isEqualTo("Seed Book");
+  }
+
+  @Test
+  void registerBookRejectsInvalidPayloadPublicationYearIsLessThan1450() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+    mockMvc.perform(post("/api/v1/books")
+    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "title": "Seed Book",
+              "authorName": "Author",
+              "isbn": "9780596009205",
+              "description": " integration test",
+              "publicationYear": 1449,
+              "totalCopies": 6,
+              "availableCopies": 5
+            }
+            """))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("Validation Failed"))
+        .andExpect(jsonPath("$.violations").isArray());
+
+  }
+
+
+  @Test
+  void registerBookRejectsInvalidPayloadPublicationYearIsGreaterThan2100() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+    mockMvc.perform(post("/api/v1/books")
+    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "title": "Seed Book",
+              "authorName": "Author",
+              "isbn": "9780596009205",
+              "description": " integration test",
+              "publicationYear": 2101,
+              "totalCopies": 6,
+              "availableCopies": 5
+            }
+            """))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("Validation Failed"))
+        .andExpect(jsonPath("$.violations").isArray());
+
+  }
+
+
+  @Test
+  void registerBookRequiresAuthentication() throws Exception {
+    mockMvc.perform(post("/api/v1/books")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(validUpdatePayload()))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void registerBookRequiresAllowAdmin() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+    mockMvc.perform(post("/api/v1/books")
+    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+          {
+            "title": "Seed Book",
+            "authorName": "Author",
+            "isbn": "9780596009205",
+            "description": " integration test",
+            "publicationYear": 2019,
+            "totalCopies": 6,
+            "availableCopies": 5
+          }
+          """))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  void registerBookRequiresAllowLibrarian() throws Exception {
+    String librarianToken = login("librarian@library.local", "ChangeMe1234!");
+
+    mockMvc.perform(post("/api/v1/books")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+          {
+            "title": "Seed Book",
+            "authorName": "Author",
+            "isbn": "9780596009205",
+            "description": " integration test",
+            "publicationYear": 2019,
+            "totalCopies": 6,
+            "availableCopies": 5
+          }
+          """))
+        .andExpect(status().isCreated());
+  }
+  @Test
   void registerRejectsInvalidPayload() throws Exception {
     mockMvc.perform(post("/api/v1/users")
         .contentType(MediaType.APPLICATION_JSON)
