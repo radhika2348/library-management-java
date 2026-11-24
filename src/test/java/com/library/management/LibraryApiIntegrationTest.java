@@ -399,7 +399,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   }
 
   @Test
-  void shouldReturn401WithoutAuthenticationWhenTieooksToAuthor() throws Exception {
+  void tieBooksToAuthorsRequiresAuthrntication() throws Exception {
     mockMvc.perform(patch("/api/v1/books/{id}", bookId))
         .andExpect(status().isUnauthorized());
   }

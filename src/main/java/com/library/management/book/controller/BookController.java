@@ -58,6 +58,8 @@ public class BookController {
     @ApiResponse(responseCode = "401", description = "Missing or invalid token", content = @Content)
     @ApiResponse(responseCode = "403", description = "Insufficient role", content = @Content)
     @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)
+    @ApiResponse(responseCode = "409", description = "AuthorName not found", content = @Content)
+
     public String addAuthorsToBook(@PathVariable("id") String id,
             @Valid @RequestBody TieBooksToAuthorsRequest request) {
         return bookService.tieBooksToAuthors(id, request);

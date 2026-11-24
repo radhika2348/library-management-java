@@ -108,7 +108,6 @@ curl -s -X GET http://localhost:8080/api/v1/authors?name='authorName'&page='valu
 
 # Remove an author
 
-
 ## Who this is for
 
 A librarian needs to take an author out of the catalog when that writer should no longer be offered for new books.
@@ -116,7 +115,6 @@ A librarian needs to take an author out of the catalog when that writer should n
 ## Requirement
 
 A librarian or an administrator can remove an author who has no books left in the catalog. After removal, that author cannot be found.
-
 
 ### `DELETE /api/v1/authors/{id}`
 
@@ -134,4 +132,35 @@ Remove Author(replace `{id}` with an postman generated_authorId):
 ```bash
 curl -s -X DELETE http://localhost:8080/api/v1/authors/{id} \
   -H 'Content-Type: application/json' \
+```
+
+## Tie-Books-To-Authors
+
+## Who this is for
+
+Readers and librarians need a book to name a real author from the catalog, so a rename or a correction shows up everywhere that author is used.
+
+## Requirement
+
+A book names an author the catalog already knows. When that author's name changes, every book that names them shows the new name. Books already in the catalog remain readable.
+
+### `PATCH /api/v1/books/{id}`
+
+Returns bookID with updated AuthorName
+
+- `200` Book updated with AuthorName in the catalog
+- `400` Validation failed
+- `401` Missing or invalid token
+- `403` Insufficient role
+- `404` Book not found
+- `409` AuthorName not found
+
+### Example requests
+
+TieBooksToAuthors:
+
+```bash
+curl -s -X PATCH http://localhost:8080/api/v1/books/{id} \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"alexa"}'
 ```
