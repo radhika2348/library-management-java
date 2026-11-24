@@ -4,18 +4,14 @@ package com.library.management.author.service;
 import java.util.Locale;
 
 import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 
 import com.library.management.author.dto.AuthorResponse;
 import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.model.AuthorDocument;
 import com.library.management.author.repository.AuthorRepository;
 import com.library.management.book.repository.BookRepository;
-
-
 import com.library.management.exception.ConflictException;
 import com.library.management.exception.ResourceNotFoundException;
 
@@ -71,9 +67,7 @@ public class AuthorService {
 
         return authorRepository.findByNameContainingIgnoreCaseOrderByName(name, page).map(authorMapper::toResponse);
 
-    }
-
-    
+    }   
 
     public String remove(String authorId) {
         AuthorDocument doc = authorRepository.findById(authorId)
@@ -89,5 +83,7 @@ public class AuthorService {
         
         return "Author with ID " + authorId + " deleted successfully!";
     }
+
+    
 
 }

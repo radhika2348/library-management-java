@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -361,6 +362,46 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  void tieBooksToAuthorsAllowLibrarian() throws Exception {
+    String librarianToken = login("librarian@library.local", "ChangeMe1234!");
+
+    mockMvc.perform(patch("/api/v1/books/{id}", bookId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
+
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "authorName": "alexa"
+
+            }
+            """))
+        .andExpect(status().isOk());
+
+  }
+
+  @Test
+  void tieBooksToAuthorsAllowAdminRole() throws Exception {
+    String adminToken = login("admin@library.local", "ChangeMe123!");
+
+    mockMvc.perform(patch("/api/v1/books/{id}", bookId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "authorName": "alexa"
+
+            }
+            """))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void tieBooksToAuthorsRequiresAuthrntication() throws Exception {
+    mockMvc.perform(patch("/api/v1/books/{id}", bookId))
+        .andExpect(status().isUnauthorized());
   }
 
   @Test

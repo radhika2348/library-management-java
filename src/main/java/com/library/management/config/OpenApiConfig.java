@@ -30,6 +30,7 @@ public class OpenApiConfig {
                                                                 -GET /api/v1/authors/{id} -view registered author details(ADMIN,LIBRARIAN,MEMBER)
                                                                 -GET /api/v1/authors -search for registered authors(ADMIN,LIBRARIAN,MEMBER)
                                                                 -DELETE /api/v1/authors/{id} -delete author (ADMIN,LIBRARIAN)
+                                                                -PATCH /api/v1/books/{id} — secured book authorName update (ADMIN, LIBRARIAN)
 
 
                                                                 The Author resource is intentionally left unimplemented for interns.
