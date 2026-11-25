@@ -80,6 +80,20 @@ public class BookService {
     public BookResponse register(UpdateBookRequest request) {
 
         String normalizedIsbn = normalizeIsbn(request.isbn());
+        String normalizedName = normalizeName(request.authorName());
+
+        if (authorRepository.existsByNameIgnoreCase(normalizedName) == false) {
+            throw new ResourceNotFoundException("AuthorName not found: " + normalizedName);
+        }
+
+        if (bookRepository.existsByIsbn(normalizedIsbn)) {
+            throw new ConflictException("ISBN is already assigned to another book");
+        }
+
+        if (request.availableCopies() > request.totalCopies()) {
+            throw new BadRequestException("Available copies cannot exceed total copies");
+        }
+
         BookDocument book = new BookDocument();
 
         book.setTitle(request.title().trim());
@@ -94,4 +108,5 @@ public class BookService {
         return bookMapper.toResponse(saved);
 
     }
+
 }

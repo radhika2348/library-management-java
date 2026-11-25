@@ -29,6 +29,7 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
     @Mock
     private AuthorRepository authorRepository;
 
@@ -191,6 +192,83 @@ class BookServiceTest {
 
         assertThat(saved.getAuthorName()).isEqualTo("AlexaR");
 
+    }
+
+    @Test
+    void registerBook() {
+
+        UpdateBookRequest request = new UpdateBookRequest(
+                "Title",
+                "Alexa",
+                "9780596009205",
+                "Desc",
+                2020,
+                5,
+                4);
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(true);
+
+        when(bookRepository.existsByIsbn("9780596009205")).thenReturn(false);
+        when(bookRepository.save(any(BookDocument.class))).thenAnswer(invocation -> {
+            BookDocument document = invocation.getArgument(0);
+            document.setId("book-1");
+            return document;
+
+        });
+
+        BookResponse response = bookService.register(request);
+
+        ArgumentCaptor<BookDocument> captor = ArgumentCaptor.forClass(BookDocument.class);
+        verify(bookRepository).save(captor.capture());
+        BookDocument saved = captor.getValue();
+
+        assertThat(saved.getTitle()).isEqualTo("Title");
+        assertThat(saved.getAuthorName()).isEqualTo("Alexa");
+        assertThat(saved.getIsbn()).isEqualTo("9780596009205");
+        assertThat(saved.getTotalCopies()).isEqualTo(5);
+        assertThat(saved.getAvailableCopies()).isEqualTo(4);
+        assertThat(response.title()).isEqualTo("Title");
+        assertThat(response.authorName()).isEqualTo("Alexa");
+        assertThat(response.isbn()).isEqualTo("9780596009205");
+        assertThat(response.totalCopies()).isEqualTo(5);
+        assertThat(response.availableCopies()).isEqualTo(4);
+    }
+
+    @Test
+    void registerRejectsDuplicateIsbn() {
+
+        when(bookRepository.existsByIsbn("9780596009205")).thenReturn(true);
+
+        assertThatThrownBy(() -> bookService.register(sampleRequest()))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("ISBN");
+    }
+
+    @Test
+    void registerFailsWhenAvailableCopiesExceedsTotalCopies() {
+
+        UpdateBookRequest request = new UpdateBookRequest(
+                "Title",
+                "Alexa",
+                "9780596009205",
+                "Desc",
+                2020,
+                2,
+                3);
+
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(true);
+        when(bookRepository.existsByIsbn("9780596009205")).thenReturn(false);
+        assertThatThrownBy(() -> bookService.register(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Available copies");
+    }
+
+    @Test
+    void registerRejectsWhenAuthorNameIsMissing() {
+
+        when(authorRepository.existsByNameIgnoreCase("author")).thenReturn(false);
+
+        assertThatThrownBy(() -> bookService.register(sampleRequest()))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
 }

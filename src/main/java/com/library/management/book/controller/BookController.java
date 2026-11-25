@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.management.book.dto.BookResponse;
-import com.library.management.book.dto.UpdateBookRequest;
 import com.library.management.book.dto.TieBooksToAuthorsRequest;
+import com.library.management.book.dto.UpdateBookRequest;
 import com.library.management.book.service.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,12 +69,15 @@ public class BookController {
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a Book", description = "Public endpoint that register Book account. ISBN must be unique.")
-    @ApiResponse(responseCode = "201", description = "Book registered", content = @Content(schema = @Schema(implementation = BookResponse.class)))
+    @ApiResponse(responseCode = "201", description = "Book registered successfully", content = @Content(schema = @Schema(implementation = BookResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Missing or invalid token", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Insufficient role", content = @Content)
     @ApiResponse(responseCode = "409", description = "ISBN conflict", content = @Content)
     public BookResponse register(@Valid @RequestBody UpdateBookRequest request) {
 
         return bookService.register(request);
 
     }
+
 }
