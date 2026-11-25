@@ -80,11 +80,10 @@ public class BookService {
     public BookResponse register(UpdateBookRequest request) {
 
         String normalizedIsbn = normalizeIsbn(request.isbn());
-        String normalizedName=normalizeName(request.authorName());
+        String normalizedName = normalizeName(request.authorName());
 
         if (authorRepository.existsByNameIgnoreCase(normalizedName) == false) {
             throw new ResourceNotFoundException("AuthorName not found: " + normalizedName);
-
         }
 
         if (bookRepository.existsByIsbn(normalizedIsbn)) {
@@ -109,4 +108,5 @@ public class BookService {
         return bookMapper.toResponse(saved);
 
     }
+
 }

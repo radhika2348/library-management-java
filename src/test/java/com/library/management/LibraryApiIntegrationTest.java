@@ -18,9 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -165,9 +165,7 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
 
   @Test
   void registerBookWithValidDetails() throws Exception {
-
     String adminToken = login("admin@library.local", "ChangeMe123!");
-
     mockMvc.perform(post("/api/v1/books")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
         .contentType(MediaType.APPLICATION_JSON)
@@ -196,7 +194,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
     String adminToken = login("admin@library.local", "ChangeMe123!");
     mockMvc.perform(post("/api/v1/books")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
@@ -212,7 +209,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -220,7 +216,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
     String adminToken = login("admin@library.local", "ChangeMe123!");
     mockMvc.perform(post("/api/v1/books")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
@@ -236,7 +231,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -270,7 +264,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void registerBookRequiresAllowLibrarian() throws Exception {
     String librarianToken = login("librarian@library.local", "ChangeMe1234!");
-
     mockMvc.perform(post("/api/v1/books")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
         .contentType(MediaType.APPLICATION_JSON)
@@ -302,7 +295,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -320,7 +312,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -338,7 +329,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -356,7 +346,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").value("Validation Failed"))
         .andExpect(jsonPath("$.violations").isArray());
-
   }
 
   @Test
@@ -370,7 +359,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void updateBookForbidsMemberRole() throws Exception {
     String memberToken = login("member@library.local", "MemberPass1");
-
     mockMvc.perform(put("/api/v1/books/{id}", bookId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken)
         .contentType(MediaType.APPLICATION_JSON)
@@ -388,7 +376,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void viewAuthorAllowMemberRole() throws Exception {
     String memberToken = login("member@library.local", "MemberPass1");
-
     mockMvc.perform(get("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken)
         .contentType(MediaType.APPLICATION_JSON))
@@ -398,7 +385,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void viewAuthorAllowAdminRole() throws Exception {
     String adminToken = login("admin@library.local", "ChangeMe123!");
-
     mockMvc.perform(get("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
         .contentType(MediaType.APPLICATION_JSON))
@@ -408,7 +394,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void viewAuthorAllowLibrarianRole() throws Exception {
     String librarianToken = login("librarian@library.local", "ChangeMe1234!");
-
     mockMvc.perform(get("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
         .contentType(MediaType.APPLICATION_JSON))
@@ -418,13 +403,11 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void searchAuthorsAllowLibrarianRole() throws Exception {
     String memberToken = login("librarian@library.local", "ChangeMe1234!");
-
     mockMvc.perform(get("/api/v1/authors")
         .param("name", "alexa")
         .param("page", "0")
         .param("size", "1")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken)
-
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
@@ -432,13 +415,11 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void searchAuthorsAllowAdminRole() throws Exception {
     String adminToken = login("admin@library.local", "ChangeMe123!");
-
     mockMvc.perform(get("/api/v1/authors")
         .param("name", "alexa")
         .param("page", "0")
         .param("size", "1")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
@@ -446,13 +427,11 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void searchAuthorsAllowMemberRole() throws Exception {
     String adminToken = login("member@library.local", "MemberPass1");
-
     mockMvc.perform(get("/api/v1/authors")
         .param("name", "alexa")
         .param("page", "0")
         .param("size", "1")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
@@ -472,7 +451,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void deleteAuthorAllowAdminRole() throws Exception {
     String adminToken = login("admin@library.local", "ChangeMe123!");
-
     mockMvc.perform(delete("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
         .contentType(MediaType.APPLICATION_JSON))
@@ -482,7 +460,6 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void deleteAuthorAllowLibrarianRole() throws Exception {
     String librarianToken = login("librarian@library.local", "ChangeMe1234!");
-
     mockMvc.perform(delete("/api/v1/authors/{id}", authorId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
         .contentType(MediaType.APPLICATION_JSON))
@@ -492,32 +469,26 @@ class LibraryApiIntegrationTest extends MongoTestcontainersConfig {
   @Test
   void tieBooksToAuthorsAllowLibrarian() throws Exception {
     String librarianToken = login("librarian@library.local", "ChangeMe1234!");
-
     mockMvc.perform(patch("/api/v1/books/{id}", bookId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + librarianToken)
-
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
               "authorName": "alexa"
-
             }
             """))
         .andExpect(status().isOk());
-
   }
 
   @Test
   void tieBooksToAuthorsAllowAdminRole() throws Exception {
     String adminToken = login("admin@library.local", "ChangeMe123!");
-
     mockMvc.perform(patch("/api/v1/books/{id}", bookId)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
         .contentType(MediaType.APPLICATION_JSON)
         .content("""
             {
               "authorName": "alexa"
-
             }
             """))
         .andExpect(status().isOk());

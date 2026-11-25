@@ -1,6 +1,5 @@
 package com.library.management.author.service;
 
-
 import java.util.Locale;
 
 import org.springframework.data.domain.Page;
@@ -67,7 +66,7 @@ public class AuthorService {
 
         return authorRepository.findByNameContainingIgnoreCaseOrderByName(name, page).map(authorMapper::toResponse);
 
-    }   
+    }
 
     public String remove(String authorId) {
         AuthorDocument doc = authorRepository.findById(authorId)
@@ -80,10 +79,8 @@ public class AuthorService {
         }
 
         authorRepository.deleteById(authorId);
-        
+
         return "Author with ID " + authorId + " deleted successfully!";
     }
-
-    
 
 }

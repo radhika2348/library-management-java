@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.library.management.author.dto.RegisterAuthorRequest;
 import com.library.management.author.repository.AuthorRepository;
 import com.library.management.book.dto.BookResponse;
 import com.library.management.book.dto.TieBooksToAuthorsRequest;
@@ -196,7 +195,7 @@ class BookServiceTest {
     }
 
     @Test
-    void registerStoreAuthorWithNormalizedName() {
+    void registerBook() {
 
         UpdateBookRequest request = new UpdateBookRequest(
                 "Title",
@@ -242,6 +241,34 @@ class BookServiceTest {
         assertThatThrownBy(() -> bookService.register(sampleRequest()))
                 .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("ISBN");
+    }
+
+    @Test
+    void registerFailsWhenAvailableCopiesExceedsTotalCopies() {
+
+        UpdateBookRequest request = new UpdateBookRequest(
+                "Title",
+                "Alexa",
+                "9780596009205",
+                "Desc",
+                2020,
+                2,
+                3);
+
+        when(authorRepository.existsByNameIgnoreCase("alexa")).thenReturn(true);
+        when(bookRepository.existsByIsbn("9780596009205")).thenReturn(false);
+        assertThatThrownBy(() -> bookService.register(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Available copies");
+    }
+
+    @Test
+    void registerRejectsWhenAuthorNameIsMissing() {
+
+        when(authorRepository.existsByNameIgnoreCase("author")).thenReturn(false);
+
+        assertThatThrownBy(() -> bookService.register(sampleRequest()))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
 }
